@@ -6,6 +6,7 @@
 
 package nl.uva.MLC;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -22,8 +23,9 @@ public class Doc {
     private String url;
     private String note;
     private String text;
+    private ArrayList<String> classes;
 
-    public Doc(String id, String n, String lang, String creationDate, String title, String url, String note, String text) {
+    public Doc(String id, String n, String lang, String creationDate, String title, String url, String note, String text, ArrayList<String> classes) {
         this.id = id;
         this.n = n;
         this.lang = lang;
@@ -32,6 +34,7 @@ public class Doc {
         this.url = url;
         this.note = note;
         this.text = text;
+        this.classes = classes ;
     }
 
     public String getId() {
@@ -64,6 +67,9 @@ public class Doc {
 
     public String getText() {
         return text;
+    }
+    public ArrayList<String>  getClasses() {
+        return classes;
     }
 
     @Override
