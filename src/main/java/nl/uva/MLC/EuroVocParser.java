@@ -68,7 +68,7 @@ public abstract class EuroVocParser {
                     
                     try {
                         
-                        XPathExpression idExpr = xpath.compile("//*[@id=\"collapsible0\"]/div[1]/div[1]/span[2]");
+                        XPathExpression idExpr = xpath.compile("//*[@id=\"collapsible2\"]/div[1]/div[2]/div[1]/span[2]");
 //                        XPathExpression nExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
 //                        XPathExpression langExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
 //                        XPathExpression creationDateExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
@@ -77,14 +77,14 @@ public abstract class EuroVocParser {
 //                        XPathExpression noteExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
 //                        XPathExpression textExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
                            
-//                        String id = (String) idExpr.evaluate(doc, XPathConstants.STRING);
+                        String id = (String) idExpr.evaluate(doc, XPathConstants.STRING);
 //                        String s = (String) idExpr.evaluate(doc, XPathConstants.STRING);
-                        System.out.println(doc.toString());
-                        Node o = (Node)idExpr.evaluate(doc, XPathConstants.NODE);
-                        String id = o.getAttributes().getNamedItem("id").getTextContent();
+//                        Node o = (Node)idExpr.evaluate(doc, XPathConstants.NODE);
+//                        String id = o.getAttributes().getNamedItem("id").getTextContent();
 //                        String id = ((Node)idExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("id").getTextContent();
 //                        String n = ((Node)nExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("n").getTextContent();
 //                        String lang = ((Node)langExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("lang").getTextContent();
+                         System.out.println("--");
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
                     }
