@@ -9,6 +9,7 @@ package nl.uva.MLC;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -67,24 +69,28 @@ public abstract class EuroVocParser {
                 
                     
                     try {
-                        
-                        XPathExpression idExpr = xpath.compile("//*[@id=\"collapsible2\"]/div[1]/div[2]/div[1]/span[2]");
-//                        XPathExpression nExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression langExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression creationDateExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression titleExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression urlExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression noteExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
-//                        XPathExpression textExpr = xpath.compile("//*[@id=\"mw-content-text\"]");
+                        XPathExpression idExpr = xpath.compile("/TEI.2");
+                        XPathExpression nExpr = xpath.compile("/TEI.2");
+                        XPathExpression langExpr = xpath.compile("/TEI.2");
+                        XPathExpression creationDateExpr = xpath.compile("//teiHeader");
+                        XPathExpression titleExpr = xpath.compile("//title[2]");
+                        XPathExpression urlExpr = xpath.compile("//xref");
+                        XPathExpression noteExpr = xpath.compile("//note");
+                        XPathExpression textExpr = xpath.compile("//classCode");
                            
-                        String id = (String) idExpr.evaluate(doc, XPathConstants.STRING);
-//                        String s = (String) idExpr.evaluate(doc, XPathConstants.STRING);
-//                        Node o = (Node)idExpr.evaluate(doc, XPathConstants.NODE);
-//                        String id = o.getAttributes().getNamedItem("id").getTextContent();
-//                        String id = ((Node)idExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("id").getTextContent();
-//                        String n = ((Node)nExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("n").getTextContent();
-//                        String lang = ((Node)langExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("lang").getTextContent();
-                         System.out.println("--");
+                        String id = ((Node)idExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("id").getTextContent();
+                        String n = ((Node)nExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("n").getTextContent();
+                        String lang = ((Node)langExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("lang").getTextContent();
+                        String creationDate = ((Node)creationDateExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("date.created").getTextContent();
+                        String title = (String)titleExpr.evaluate(doc, XPathConstants.STRING);
+                        String url = (String)urlExpr.evaluate(doc, XPathConstants.STRING);
+                        String note = (String)noteExpr.evaluate(doc, XPathConstants.STRING);
+                        NodeList nodes = (NodeList)textExpr.evaluate(doc, XPathConstants.NODESET);
+                        ArrayList<String> classes = new ArrayList<>();
+                        for (int i = 0; i < nodes.getLength(); i++) {
+                            classes.add(nodes.item(i).getTextContent());
+                        }
+                        
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -106,6 +112,6 @@ public abstract class EuroVocParser {
             }
         };
 //        evp.fileReader(new File("/home/mosi/Desktop/MLC/data/EuroVac/en"));
-            evp.fileParser(new File("/home/mosi/Desktop/MLC/pom.xml"));
+            evp.fileParser(new File("/home/mosi/Desktop/MLC/data/EuroVac/en/1969/jrc31969L0169-en.xml"));
     }
 }
