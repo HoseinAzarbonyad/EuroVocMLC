@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package nl.uva.MLC;
+package nl.UvA.MLC.EuroVoc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,12 +49,12 @@ public abstract class EuroVocParser {
     public void fileParser(File file){
                
                 XPath xpath = null;
-                Document doc = null;
+                Document document = null;
                 try {
                     DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();   
 //                    docFactory.setNamespaceAware(true);
                     DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                    doc = docBuilder.parse(file);
+                    document = docBuilder.parse(file);
                     
                     XPathFactory xpathfactory = XPathFactory.newInstance();
                     xpath = xpathfactory.newXPath();
@@ -66,7 +66,6 @@ public abstract class EuroVocParser {
                 } catch (IOException ex) {
                     Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
                     
                     try {
                         XPathExpression idExpr = xpath.compile("/TEI.2");
@@ -76,42 +75,31 @@ public abstract class EuroVocParser {
                         XPathExpression titleExpr = xpath.compile("//title[2]");
                         XPathExpression urlExpr = xpath.compile("//xref");
                         XPathExpression noteExpr = xpath.compile("//note");
-                        XPathExpression textExpr = xpath.compile("//classCode");
+                        XPathExpression classExpr = xpath.compile("//classCode");
+                        XPathExpression textExpr = xpath.compile("//p");
                            
-                        String id = ((Node)idExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("id").getTextContent();
-                        String n = ((Node)nExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("n").getTextContent();
-                        String lang = ((Node)langExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("lang").getTextContent();
-                        String creationDate = ((Node)creationDateExpr.evaluate(doc, XPathConstants.NODE)).getAttributes().getNamedItem("date.created").getTextContent();
-                        String title = (String)titleExpr.evaluate(doc, XPathConstants.STRING);
-                        String url = (String)urlExpr.evaluate(doc, XPathConstants.STRING);
-                        String note = (String)noteExpr.evaluate(doc, XPathConstants.STRING);
-                        NodeList nodes = (NodeList)textExpr.evaluate(doc, XPathConstants.NODESET);
+                        String id = ((Node)idExpr.evaluate(document, XPathConstants.NODE)).getAttributes().getNamedItem("id").getTextContent();
+                        String n = ((Node)nExpr.evaluate(document, XPathConstants.NODE)).getAttributes().getNamedItem("n").getTextContent();
+                        String lang = ((Node)langExpr.evaluate(document, XPathConstants.NODE)).getAttributes().getNamedItem("lang").getTextContent();
+                        String creationDate = ((Node)creationDateExpr.evaluate(document, XPathConstants.NODE)).getAttributes().getNamedItem("date.created").getTextContent();
+                        String title = (String)titleExpr.evaluate(document, XPathConstants.STRING);
+                        String url = (String)urlExpr.evaluate(document, XPathConstants.STRING);
+                        String note = (String)noteExpr.evaluate(document, XPathConstants.STRING);
+                        NodeList classesNodes = (NodeList)classExpr.evaluate(document, XPathConstants.NODESET);
                         ArrayList<String> classes = new ArrayList<>();
-                        for (int i = 0; i < nodes.getLength(); i++) {
-                            classes.add(nodes.item(i).getTextContent());
+                        for (int i = 0; i < classesNodes.getLength(); i++) {
+                            classes.add(classesNodes.item(i).getTextContent());
                         }
-                        
+                        NodeList textNodes = (NodeList)textExpr.evaluate(document, XPathConstants.NODESET);
+                        String text = "";
+                        for (int i = 0; i < textNodes.getLength(); i++) {
+                            text += textNodes.item(i).getTextContent()  + "\n";
+                        }
+                        EuroVocDoc doc = new EuroVocDoc(id, n, lang, creationDate, title, url, note, text.trim(), classes);
+                        doSomeAction(doc);
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-//                Object result = expr.evaluate(doc, XPathConstants.STRING);
-//                s = (String) result;
-                
-//            Doc doc = new
-                    
     }
-    public abstract void doSomeAction(Doc doc); 
-    
-    public static void main(String[] args) {
-        EuroVocParser evp = new EuroVocParser() {
-
-            @Override
-            public void doSomeAction(Doc doc) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-//        evp.fileReader(new File("/home/mosi/Desktop/MLC/data/EuroVac/en"));
-            evp.fileParser(new File("/home/mosi/Desktop/MLC/data/EuroVac/en/1969/jrc31969L0169-en.xml"));
-    }
+    public abstract void doSomeAction(EuroVocDoc doc); 
 }

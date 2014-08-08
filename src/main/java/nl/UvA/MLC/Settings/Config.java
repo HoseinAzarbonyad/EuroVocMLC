@@ -19,10 +19,10 @@ public class Config {
     public static File cFile;
     static{
         try {
-//            	ClassLoader loader = Thread.currentThread().getContextClassLoader();  
-	        cFile = new File("Config.properties");
-                InputStream stream = new FileInputStream(cFile);            
-//	      InputStream stream = Config.class.getResourceAsStream("Config.properties");
+            	ClassLoader loader = Thread.currentThread().getContextClassLoader();  
+//	        cFile = new File("Config.properties");
+//              InputStream stream = new FileInputStream(cFile);            
+	      InputStream stream = Config.class.getResourceAsStream("/Config.properties");
           configFile.load(stream);  
         } catch (IOException e) {
             e.printStackTrace();

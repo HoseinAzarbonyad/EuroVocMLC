@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package nl.uva.MLC;
+package nl.UvA.MLC.EuroVoc;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,7 +13,7 @@ import java.util.Objects;
  *
  * @author mosi
  */
-public class Doc {
+public class EuroVocDoc {
     
     private String id;
     private String n;
@@ -25,7 +25,7 @@ public class Doc {
     private String text;
     private ArrayList<String> classes;
 
-    public Doc(String id, String n, String lang, String creationDate, String title, String url, String note, String text, ArrayList<String> classes) {
+    public EuroVocDoc(String id, String n, String lang, String creationDate, String title, String url, String note, String text, ArrayList<String> classes) {
         this.id = id;
         this.n = n;
         this.lang = lang;
@@ -87,7 +87,7 @@ public class Doc {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Doc other = (Doc) obj;
+        final EuroVocDoc other = (EuroVocDoc) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
