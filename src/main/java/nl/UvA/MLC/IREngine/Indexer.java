@@ -7,6 +7,7 @@
 package nl.UvA.MLC.IREngine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -34,18 +35,20 @@ public class Indexer extends EuroVocParser{
     
     private IndexWriter writer;
 
-    public Indexer() throws IOException, ParserConfigurationException, SAXException, SQLException {
-
-        Analyzer analyzer = getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
-        IndexWriterConfig irc = new IndexWriterConfig(Version.LUCENE_CURRENT, analyzer);
-        this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("INDEX_PATH"))), irc);
-        fileReader(new File(configFile.getProperty("CORPUS_PATH")));
-        this.writer.commit();
-        this.writer.close();
-        analyzer.close();
-    }
-     public void indexDocument(String docIDBuffer, String textBuffer) throws IOException {
-        
+    public Indexer(){
+        try {
+            Analyzer analyzer = getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
+            IndexWriterConfig irc = new IndexWriterConfig(Version.LUCENE_CURRENT, analyzer);
+            this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("INDEX_PATH"))), irc);
+            fileReader(new File(configFile.getProperty("CORPUS_PATH")));
+            this.writer.commit();
+            this.writer.close();
+            analyzer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Indexer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @Override
     public void doSomeAction(EuroVocDoc EVdoc) {
@@ -67,11 +70,7 @@ public class Indexer extends EuroVocParser{
     }
     
     public static void main(String[] args) throws ParserConfigurationException, SAXException, SQLException {
-        try {
-            new Indexer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Indexer();
     }
     
 }

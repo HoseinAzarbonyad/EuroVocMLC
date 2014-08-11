@@ -42,8 +42,9 @@ public class Utilities {
 
 
 	public static Analyzer MyEnglishAnalizer(Boolean steming, Boolean stopwordRemooving) throws FileNotFoundException{
-		final CharArraySet stopword = Stoplistloader(configFile.getProperty("ENGLISH_STOPWORDS_FILE_PATH"));
+		final CharArraySet stopword;
 		if(steming && stopwordRemooving) {
+                        stopword = Stoplistloader(configFile.getProperty("ENGLISH_STOPWORDS_FILE_PATH"));
 			return new AnalyzerWrapper() {
 				@Override
 				protected Analyzer getWrappedAnalyzer(String string) {
@@ -58,6 +59,7 @@ public class Utilities {
 			};
 		}
 		else if(!steming && stopwordRemooving) {
+                        stopword = Stoplistloader(configFile.getProperty("ENGLISH_STOPWORDS_FILE_PATH"));
 			return new StandardAnalyzer(Version.LUCENE_CURRENT,stopword);
 		}
 		else if(steming && !stopwordRemooving) {

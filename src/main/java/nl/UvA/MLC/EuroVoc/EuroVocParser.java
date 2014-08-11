@@ -52,19 +52,24 @@ public abstract class EuroVocParser {
                 Document document = null;
                 try {
                     DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();   
-//                    docFactory.setNamespaceAware(true);
+                    docFactory.setNamespaceAware(true);
                     DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
                     document = docBuilder.parse(file);
-                    
                     XPathFactory xpathfactory = XPathFactory.newInstance();
                     xpath = xpathfactory.newXPath();
                     
                 } catch (ParserConfigurationException ex) {
                     Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("EROOR IN: " + file.getPath());
+                    return;
                 } catch (SAXException ex) {
                     Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("EROOR IN: " + file.getPath());
+                    return;
                 } catch (IOException ex) {
                     Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("EROOR IN: " + file.getPath());
+                    return;
                 }
                     
                     try {
@@ -99,6 +104,8 @@ public abstract class EuroVocParser {
                         doSomeAction(doc);
                     } catch (XPathExpressionException ex) {
                         Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+                        System.err.println("EROOR IN: " + file.getPath());
+                        return;
                     }
     }
     public abstract void doSomeAction(EuroVocDoc doc); 
