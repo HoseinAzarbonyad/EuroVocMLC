@@ -37,28 +37,19 @@ public class HighFreqTerms {
         TermStatsDFQueue tiq = null;
         TermsEnum te = null;
         try {
-            Fields fields = MultiFields.getFields(this.ireader);
-            if (fields == null) {
-                log.warn("Index with no fields - probably empty or corrupted");
-                return EMPTY_STATS;
-            }
             tiq = new TermStatsDFQueue(numTerms);
-//            Iterator<String> fieldIterator = fields.iterator();
-//            while (fieldIterator.hasNext()) {
-//                String fieldName = fieldIterator.next();
-            Terms terms = fields.terms(fieldName);
+            Terms terms = MultiFields.getTerms(ireader,fieldName);
             if (terms != null) {
                 te = terms.iterator(te);
                 this.fillQueue(te, tiq, fieldName);
             }
-//            } 
         } catch (IOException ex) {
             log.error(ex);
         } catch (Exception ex) {
             log.error(ex);
         }
         TermStats[] result = new TermStats[tiq.size()];
-    // we want highest first so we read the queue and populate the array
+        // we want highest first so we read the queue and populate the array
         // starting at the end and work backwards
         int count = tiq.size() - 1;
         while (tiq.size() != 0) {
@@ -78,17 +69,18 @@ public class HighFreqTerms {
         TermStatsTFQueue tiq = null;
         TermsEnum te = null;
         try {
-            Fields fields = MultiFields.getFields(this.ireader);
-            if (fields == null) {
-                log.warn("Index with no fields - probably empty or corrupted");
-                return EMPTY_STATS;
-            }
+//            Fields fields = MultiFields.getFields(this.ireader);
             tiq = new TermStatsTFQueue(numTerms);
-            Terms terms = fields.terms(fieldName);
+//            Iterator<String> fieldIterator = fields.iterator();
+//            while (fieldIterator.hasNext()) {
+//                String fieldName = fieldIterator.next();
+//            Terms terms = fields.terms(fieldName);
+            Terms terms = MultiFields.getTerms(ireader,fieldName);
             if (terms != null) {
                 te = terms.iterator(te);
                 this.fillQueue(te, tiq, fieldName);
             }
+//            } 
         } catch (IOException ex) {
             log.error(ex);
         } catch (Exception ex) {

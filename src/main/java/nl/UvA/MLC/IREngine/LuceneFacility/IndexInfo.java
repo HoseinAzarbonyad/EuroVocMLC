@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.CompositeReader;
 import org.apache.lucene.index.DocsEnum;
@@ -25,7 +27,6 @@ import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.BytesRef;
-import static nl.UvA.MLC.Settings.Config.configFile;
 
 /**
  *
@@ -39,7 +40,6 @@ public class IndexInfo {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IndexInfo.class.getName());
     private IndexReader ireader = null;
     private String IndexPath = null;
-    private HashSet<Term> allTerms;
     private Long numOfAllTerms = -1L;
     private Long numOfAllUniqTerms = -1L;
     private Double AvgDocLength = 0D;
@@ -53,17 +53,11 @@ public class IndexInfo {
      * setting the path of index directory
      * @param IndexPath path of the index directory
      */
-    public IndexInfo(String IndexPath) {
-        allTerms = new HashSet<Term>();
+    public IndexInfo(IndexReader ireader) {
         fieldNames = new ArrayList<String>();
         numOfAllTerms = -1L;
         AvgDocLength = -1D;
-
-        try {
-            ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
-        } catch (IOException ex) {
-            log.error(ex);
-        }
+        this.ireader = ireader;
         Collections.sort(fieldNames);
     }
     
@@ -105,7 +99,7 @@ public class IndexInfo {
      * <code>etTotalTF_PerField</code> extracts term frequency of the given Lucene term for the given index field.
      * NOTE: the given term should be analyzed (e.g. stemming) before.
      * 
-     * @param field
+     * @param field field's name
      * @param text
      * @return term frequency of given term over the given field
      */
@@ -126,7 +120,7 @@ public class IndexInfo {
      * 
      * @param text
      * @param docId
-     * @param field
+     * @param field field's name
      * @return term frequency of the given term in the given field of a specific document
      */
     
@@ -155,7 +149,7 @@ public class IndexInfo {
      * 
      * <code>getDF</code> extracts the document frequency of the given term in the given field
      * 
-     * @param field
+     * @param field field's name
      * @param text
      * @return document frequency of the given term in the given field
      */
@@ -175,7 +169,7 @@ public class IndexInfo {
      * <code>getDocumentLength</code> extracts the length of the given field the given document
      * 
      * @param docId
-     * @param field
+     * @param field field's name
      * @return length of the given field the given document
      */
     public Long getDocumentLength(int docId, String field){
@@ -205,7 +199,7 @@ public class IndexInfo {
      * <code>getNumberofUniqTermsInDocument</code> gets number of unique terms in the given field of the given document
      * 
      * @param docId
-     * @param field
+     * @param field field's name
      * @return
      */
     public Long getNumberofUniqTermsInDocument(int docId, String field){
@@ -224,7 +218,7 @@ public class IndexInfo {
     /**
      *<code>getNumOfAllTerms</code> gets number of all terms in the given field of index (summation of all document's length)
      * 
-     * @param field
+     * @param field field's name
      * @return number of all terms in the given field of index
      */
     public Long getNumOfAllTerms(String field){
@@ -242,7 +236,7 @@ public class IndexInfo {
      *
      * <code>getAvgDocLength</code> calculates average length of the given fields over all documents
      *
-     * @param field
+     * @param field field's name
      * @return average length of the given fields over all documents
      */
     public Double getAvgDocLength(String field){
@@ -257,7 +251,7 @@ public class IndexInfo {
     /**
      *<code>getNumOfAllUniqueTerms_PerField</code> gets number of unique terms in the given field of index
      * 
-     * @param field
+     * @param field field's name
      * @return number of unique terms in the given field of index
      */
     public Long getNumOfAllUniqueTerms_PerField(String field){
@@ -312,32 +306,40 @@ public class IndexInfo {
      *
      *<code>getTopTerms_DF</code> extracts top k most frequent terms in the given field of index in terms of Document Frequency 
      * 
-     * @param field
+     * @param field field's name
      * @param numTerms Threshold for number of terms in the output list
      * @return top k most frequent terms in the given field of index in terms of Document Frequency
      */
-    public TermStats[] getTopTerms_DF(String field, Integer numTerms){
-        if (topTermsDF == null) {
+    public ArrayList<String> getTopTerms_DF(String field, Integer numTerms){
+      ArrayList<String> top_DF =  new ArrayList<>();
+      if (topTermsDF == null) {
             HighFreqTerms HIT = new HighFreqTerms(ireader);
             topTermsDF = HIT.getHighDFTerms(numTerms, field);
       }
-      return topTermsDF;
+      for(TermStats ts: topTermsDF){
+          top_DF.add(ts.getTermText());
+      }
+      return top_DF;
     }
     
      /**
      *
      *<code>getTopTerms_DF</code> extracts top k most frequent terms in the given field of index in terms of Term Frequency 
      * 
-     * @param field
+     * @param field field's name
      * @param numTerms Threshold for number of terms in the output list
      * @return top k most frequent terms in the given field of index in terms of Term Frequency
      */
-    public TermStats[] getTopTerms_TF(String field, Integer numTerms){
-        if (topTermsTF == null) {
+    public ArrayList<String> getTopTerms_TF(String field, Integer numTerms){
+      ArrayList<String> top_TF =  new ArrayList<>();
+      if (topTermsTF == null) {
             HighFreqTerms HIT = new HighFreqTerms(ireader);
             topTermsTF = HIT.getHighTFTerms(numTerms, field);
       }
-      return topTermsTF;
+      for(TermStats ts: topTermsTF){
+          top_TF.add(ts.getTermText());
+      }
+      return top_TF;
     }
     
     /**
@@ -372,6 +374,31 @@ public class IndexInfo {
             res.add(info.name);
         }
         return res;
+    }
+    
+    /**
+     * <code>getAllTerms</code> extracts all terms in the given field.
+     * @param field field's name
+     * @return all terms in the given field
+     */
+    public HashSet<BytesRef> getAllTerms(String field){
+        HashSet<BytesRef> allTerms = new HashSet<>();
+        try {
+            TermsEnum te = null;
+            Terms terms = MultiFields.getTerms(ireader,field);
+            if (terms != null) {
+                    te = terms.iterator(te);
+                    BytesRef term;
+                    while ((term = te.next()) != null) {
+                        BytesRef r = new BytesRef();
+                        r.copyBytes(term);
+                        allTerms.add(r);
+                    }
+            }
+        } catch (IOException ex) {   
+            log.error(ex);
+        }
+        return allTerms;
     }
 }
 
