@@ -2,6 +2,12 @@ package nl.UvA.MLC.IREngine.LuceneFacility;
 
 import org.apache.lucene.util.BytesRef;
 
+
+/**
+ *
+ * @author  Mostafa Dehghani
+ */
+
 public final class TermStats {
   public BytesRef termtext;
   public String field;

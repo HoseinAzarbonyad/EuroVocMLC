@@ -8,6 +8,8 @@ import org.apache.lucene.util.PriorityQueue;
 
 /**
  *
+ * @author  Mostafa Dehghani
+ * 
  * <code>HighFreqTerms</code> class extracts the top n most frequent terms (by
  * document frequency or by total term frequency) from an existing Lucene.
  */

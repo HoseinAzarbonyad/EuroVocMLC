@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.UvA.MLC.IREngine.LuceneFacility;
 
 import java.io.File;
@@ -34,7 +29,7 @@ import static nl.UvA.MLC.Settings.Config.configFile;
 
 /**
  *
- * @author mosi
+ * @author  Mostafa Dehghani
  * 
  * <code>IndexInfo</code> is a class which provide whit methods that extract information about the terms and document from a lucene index
  * Note: this class is compatible with Lucene 4.9 index
@@ -71,18 +66,6 @@ public class IndexInfo {
         }
         Collections.sort(fieldNames);
     }
-    
-    public static void main(String[] args) {
-        IndexInfo ii = new IndexInfo(configFile.getProperty("DOC_INDEX_PATH"));
-        TermStats[] tsArray = ii.getTopTerms_TF("TEXT",50);
-        for(TermStats ts: tsArray){
-            System.out.println(ts.getTermText() + " " + ts.totalTermFreq + " " + ts.docFreq);
-        }
-    }
-
-    
-    
-    //Terms Info
     
     /**
      * 

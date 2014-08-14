@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package nl.UvA.MLC.EuroVoc;
 
@@ -13,10 +9,12 @@ import static nl.UvA.MLC.Settings.Config.configFile;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
 
+
 /**
  *
- * @author mosi
+ * @author  Mostafa Dehghani
  */
+
 public class EuroVocIndexUtil {
         
         org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(EuroVocDoc.class.getName());

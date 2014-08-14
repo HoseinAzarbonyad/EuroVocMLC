@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.UvA.MLC.Settings;
 
 import java.io.File;
@@ -12,7 +8,7 @@ import java.util.Properties;
 
 /**
  *
- * @author Mosi
+ * @author  Mostafa Dehghani
  */
 public class Config {
     public static Properties configFile = new Properties();
